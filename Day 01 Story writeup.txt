@@ -1,16 +1,92 @@
 Day 01 of 30 — My First AI API Call: A Journey Through Three Tools in One Evening
 
-Journey -
+######### Journey ###########
+
 I started today with a simple goal — make my first programmatic call to an AI model and 
 get it to write a haiku about my day. Sounds trivial. Turned out to be one of the most 
 educational evenings I have had in a while without feeling overwhelmed or confused.
 
+My first instinct was Claude. It is what I use daily for work, it reasons well, and I trusted it. 
+I set up my project folder, created a virtual environment, and went to get my API key. That is when I hit the 
+first reality check — the Claude API is a paid service. For a daily learning project where I am running dozens of
+small experiments, I wanted to start without a billing commitment. So I pivoted.
 
-Challanges -
+Google Gemini was the logical next stop. Free tier, generous daily limits, no credit card needed. 
+I got my API key from AI Studio in under two minutes, installed the library, wrote the code — 
+and ran straight into my first real error. The model name gemini-1.5-flash had been deprecated. 
+Updated it to gemini-2.0-flash, ran again, typed my responses — and hit a 429 rate limit error. 
+Google's free tier had throttled me after just a couple of test runs. I updated the code to handle retries automatically 
+with a wait-and-retry loop — which is actually standard practice in production systems — but the interruption 
+broke the flow of learning.
 
-ran into No Module named ollam found as i tried importing ollama without actually pulling 
-the model in the environment.
+That is when I made the call to go fully local. Ollama running inside Docker gave me everything I needed — no API 
+key, no rate limits, no data leaving my machine, no cost ever. I already had Docker Desktop installed from 
+another project, confirmed the Ollama container was running with docker ps, pulled llama3.2 into the existing 
+container, and within minutes had a working Python script generating haikus on my own laptop.
 
-Learnings - 
+The final result — a 50-line Python script that takes your mood and a daily highlight as input and returns a 
+haiku — is not impressive on its own. What is impressive is everything that happened around it. 
+I debugged three different error types, worked across three different AI providers, understood the trade-offs 
+between cloud and local AI, and built my first mental model of how API calls, system prompts, and model responses
+actually work together.
 
-Resume perspective - 
+Day 01 done. 29 to go.
+
+
+########## CHANLLANGES ###################
+
+* Navigated a deprecated model error (gemini-1.5-flash no longer supported) with no prior Gemini experience — 
+diagnosed the issue by reading the error message carefully and resolved it by identifying the correct current 
+model name gemini-2.0-flash independently
+
+* Hit Google's free tier rate limiting (429 ResourceExhausted) immediately after fixing the model error — understood that this was a quota issue not a code issue, and implemented an automatic retry loop with a 60-second wait to handle it gracefully the way production systems do
+* Encountered a No module named google error caused by installing the library outside the active virtual environment — traced the root cause to venv activation and resolved it by understanding how Python's isolated environments work
+* Had to evaluate three completely different AI providers in a single evening under no guidance — weighed Claude (paid, best quality), Gemini (free, cloud, rate limited), and Llama via Ollama (free, local, private) and made a justified technical decision to proceed with local deployment
+* Managed Docker-based Ollama setup without prior context on whether an existing installation could be safely reused across projects — reasoned through container isolation independently and confirmed reuse was safe with zero impact on other projects
+
+
+########## Learnings ################# 
+
+* Understood the anatomy of an LLM API call for the first time — that every call has three distinct parts: a system prompt (the persona and rules), a user message (the actual input), and a response (the model output) — and that this structure is identical across all providers
+* Learned that the system prompt is the most powerful lever in controlling AI behaviour — the same model gives completely different outputs depending on how the system instruction is written, which is the foundation of prompt engineering
+* Discovered that AI providers are interchangeable at the code level — switching between Claude, Gemini, and Ollama required changing fewer than 10 lines of code while all the surrounding logic stayed identical, which is why production systems are built to be model-agnostic
+* Understood the real trade-off between cloud and local AI deployment — cloud APIs offer higher quality and no setup but come with cost, rate limits, and data leaving your machine; local models via Ollama offer zero cost, zero latency, and complete data privacy at the cost of being dependent on your hardware
+* Learned what rate limiting means in practice and why retry logic with backoff is a standard pattern in any system that calls an external API — not just AI APIs but any third-party service
+* Realised that virtual environments in Python are not just good practice but essential — without activating venv, installed packages are invisible to your project and cause cryptic import errors
+* Understood that Docker containers provide clean isolation — the same Ollama container and model can serve multiple completely separate projects simultaneously with zero interference, making it the right way to run local AI tools during development
+* Got first-hand experience that real engineering is not just writing code — it is reading error messages carefully, understanding what they mean, making decisions under ambiguity, and adapting quickly when the first and second approach do not work
+
+
+
+########## Resume perspective ############ 
+
+Skillsets this single day demonstrates:
+Skill                   How Day 1 showed it
+##############          #####################
+API integration         Called three different AI APIs and understood their structure
+Environment management  Set up Python venv, managed dependencies cleanly
+Error handling          Diagnosed and fixed 3 distinct error types independently
+Rate limit handling     Implemented retry logic with backoff — production pattern
+Containerisation        Used Docker to run Ollama isolated from system
+Prompt engineering      Wrote system prompts that controlled model output precisely
+Vendor evaluation       Evaluated Claude vs Gemini vs Llama on cost, privacy, latency
+Security awareness      Used .env files and .gitignore to protect API keys
+Problem solving         Navigated deprecated model names, quota errors, module errors
+Self-directed learning  Structured and executed a learning plan independently
+
+Technologies used on Day 01:
+#############################
+
+Languages     : Python 3.13
+AI Providers  : Anthropic Claude (evaluated), Google Gemini 2.0 Flash, Meta Llama 3.2
+Libraries     : google-generativeai, ollama, python-dotenv
+Infrastructure: Docker Desktop, Ollama container
+Tools         : VS Code, terminal, virtual environment (venv)
+Concepts      : LLM API calls, system prompts, tokenisation, rate limiting,
+                retry logic, local vs cloud model deployment, API key security
+
+########## Interview Tip ##########
+Lead with the desicion making, not directly with the code.
+Lead with challanges and then learnings.
+
+
