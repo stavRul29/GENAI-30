@@ -1,0 +1,16 @@
+Day 01 of 30 — My First AI API Call: A Journey Through Three Tools in One Evening
+
+Journey -
+I started today with a simple goal — make my first programmatic call to an AI model and 
+get it to write a haiku about my day. Sounds trivial. Turned out to be one of the most 
+educational evenings I have had in a while without feeling overwhelmed or confused.
+
+
+Challanges -
+
+ran into No Module named ollam found as i tried importing ollama without actually pulling 
+the model in the environment.
+
+Learnings - 
+
+Resume perspective - 
